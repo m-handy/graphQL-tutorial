@@ -1,4 +1,4 @@
-# schema definition
+# application-schema definition
 
 type Query {
     info: String!
