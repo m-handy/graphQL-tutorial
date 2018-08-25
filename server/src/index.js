@@ -1,37 +1,25 @@
 const { GraphQLServer } = require('graphql-yoga')
-
-// dummy data
-let links = [{
-  id: 'link-0',
-  url: 'www.howtographql.com',
-  description: 'Full-stack tutorial for GraphQL'
-},
-{
-  id: 'link-1',
-  url: 'www.facebook.com',
-  description: 'prostě fejbuček'
-}]
-
-// ID counter
-let idCount = links.length
+const { Prisma } = require('prisma-binding')
 
 // schema implementation - resolvers have to be named same as fields in schema.graphql
 const resolvers = {
     Query: {
         info: () => `This is API of Hackernews Clone`,
-        feed: () => links,
-        link: (root, args) => links[args.id]
+        feed: (root, args, context, info) => {
+            return context.db.query.links({}, info)
+        },
+        //link: (root, args) => links[args.id]
     },
     Mutation: {
-        post: (root, args) => {
-            const link = {
-                id: `link-${idCount++}`,
-                description: args.description,
-                url: args.url,
-            }
-            links.push(link)
-            return link
+        post: (root, args, context, info) => {
+          return context.db.mutation.createLink({
+            data: {
+              url: args.url,
+              description: args.description,
+            },
+          }, info)
         },
+        /*
         updateLink: (root, args) => {
             if (args.id < idCount){
                 const link = {
@@ -50,6 +38,7 @@ const resolvers = {
             }
             return links
         }
+        */
     },
     // not needed - GraphQL server infers what it should look like
     Link: {
@@ -63,5 +52,14 @@ const resolvers = {
 const server = new GraphQLServer({
     typeDefs: `./src/schema.graphql`,
     resolvers,
+    context: req => ({
+        ...req,
+        db: new Prisma({
+            typeDefs: 'src/generated/prisma.graphql',
+            endpoint: 'http://localhost:4466',
+            secret: 'mysecret123',
+            debug: true,
+        })
+    })
 })
 server.start(() => console.log(`Server is running on http://localhost:4000`))
