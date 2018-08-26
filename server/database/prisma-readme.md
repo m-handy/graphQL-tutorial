@@ -1,6 +1,12 @@
-`docker-compose up -d`
-`docker-compose down`
+# DOCKER COMMANDS:
+- `docker-compose up -d`
+- `docker-compose down`
 
+# DEPLOY:
+- `export PRISMA_MANAGEMENT_API_SECRET=123` (`managementApiSecret` in docker-compose.yml)
+- `prisma deploy`
+
+# RUN
 - token for "secret: mysecret123" (command `prisma token`)
 ```
 {
@@ -8,5 +14,4 @@
 }
 ```
 
-`export PRISMA_MANAGEMENT_API_SECRET=123`
-`prisma deploy`
+
