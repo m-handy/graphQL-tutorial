@@ -1,52 +1,20 @@
 const { GraphQLServer } = require('graphql-yoga')
 const { Prisma } = require('prisma-binding')
+const Query = require('./resolvers/Query')
+const Mutation = require('./resolvers/Mutation')
+const AuthPayload = require('./resolvers/AuthPayload')
+const Subscription = require('./resolvers/Subscription')
+const Feed = require('./resolvers/Feed')
 
 // schema implementation - resolvers have to be named same as fields in schema.graphql
 const resolvers = {
-    Query: {
-        info: () => `This is API of Hackernews Clone`,
-        feed: (root, args, context, info) => {
-            return context.db.query.links({}, info)
-        },
-        //link: (root, args) => links[args.id]
-    },
-    Mutation: {
-        post: (root, args, context, info) => {
-          return context.db.mutation.createLink({
-            data: {
-              url: args.url,
-              description: args.description,
-            },
-          }, info)
-        },
-        /*
-        updateLink: (root, args) => {
-            if (args.id < idCount){
-                const link = {
-                    id: `link-${args.id}`,
-                    description: args.description,
-                    url: args.url,
-                }
-                links[args.id] = link
-                return link
-            }
-            return null
-        },
-        deleteLink: (root, args) => {
-            if (args.id < idCount){
-                links.splice(args.id,1)
-            }
-            return links
-        }
-        */
-    },
-    // not needed - GraphQL server infers what it should look like
-    Link: {
-        id: (root) => root.id,
-        description: (root) => root.description,
-        url: (root) => root.url,
-    }
+    Query,
+    Mutation,
+    AuthPayload,
+    Subscription,
+    Feed
 }
+
 
 // server startup
 const server = new GraphQLServer({

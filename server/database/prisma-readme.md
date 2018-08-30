@@ -4,7 +4,7 @@
 
 # DEPLOY:
 - `export PRISMA_MANAGEMENT_API_SECRET=123` (`managementApiSecret` in docker-compose.yml)
-- `prisma deploy`
+- `prisma deploy` - in /server folder ! (not in /server/database)
 
 # RUN
 - token for "secret: mysecret123" (command `prisma token`)
